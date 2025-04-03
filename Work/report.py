@@ -10,13 +10,16 @@ def read_portfolio(filename):
     with open(filename, 'rt') as f:
         rows = csv.reader(f)
         headers = next(rows)
-        for line in rows:
-            row = {
-                'name': line[0],
-                'shares': int(line[1]),
-                'price': float(line[2])
-            }
-            portfolio.append(row)
+
+        for rowno, row in enumerate(rows, start=1):
+            record = dict(zip(headers, row))
+            try:
+                record['shares'] = int(record['shares'])
+                record['price'] = float(record['price'])
+            except ValueError:
+                print(f"Row {rowno}: Couldn't convert: {row}")
+                continue
+            portfolio.append(record)
 
     return portfolio
 
@@ -50,3 +53,24 @@ def analyze_portfolio(portfolio, prices):
         total_earned += asset_current_price - asset_price
 
     print(f'포트폴리오 현재가치: {portfolio_current_value} / 손익: {total_earned}')
+
+def make_report(portfolio, prices):
+
+    resultList = []
+
+    for asset in portfolio:
+        asset_name = asset['name']
+        asset_shares = asset['shares']
+        asset_price = asset['price']
+        asset_current_price = prices[asset_name]
+        resultList.append((asset_name, asset_shares, asset_current_price, asset_current_price-asset_price))
+
+    return resultList
+
+def print_report(resultList):
+
+    headers = ('Name', 'Shares', 'Price', 'Change')
+    print(f'{headers[0]:>10s} {headers[1]:>10s} {headers[2]:>10s} {headers[3]:>10s}')
+    print(f'{'':->10} {'':->10} {'':->10} {'':->10}')
+    for name, shares, price, change in resultList:
+        print(f'{name:>10s} {shares:>10d} {'$' + str(round(price, 2)):>10s} {change:>10.2f}')
