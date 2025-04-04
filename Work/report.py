@@ -35,7 +35,7 @@ def read_prices(filename):
             except IndexError:
                 print('IndexError:', line)
                 continue
-            print(line)
+            # print(line)
 
     return prices
 
@@ -74,3 +74,8 @@ def print_report(resultList):
     print(f'{'':->10} {'':->10} {'':->10} {'':->10}')
     for name, shares, price, change in resultList:
         print(f'{name:>10s} {shares:>10d} {'$' + str(round(price, 2)):>10s} {change:>10.2f}')
+
+def portfolio_report(portfolio_filename, prices_filename):
+    portfolio = read_portfolio(portfolio_filename)
+    prices = read_prices(prices_filename)
+    print_report(make_report(portfolio, prices))
