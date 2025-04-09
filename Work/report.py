@@ -2,6 +2,8 @@
 #
 # Exercise 2.4
 import csv
+import sys
+
 
 def read_portfolio(filename):
     '''포트폴리오 파일의 총 비용(주식수*가격)을 계산'''
@@ -79,3 +81,14 @@ def portfolio_report(portfolio_filename, prices_filename):
     portfolio = read_portfolio(portfolio_filename)
     prices = read_prices(prices_filename)
     print_report(make_report(portfolio, prices))
+
+def main(argv):
+    if len(argv) != 3:
+        raise SystemExit(f'Usage: {argv[0]} ' 'portfile pricefile')
+
+    portfolio_report(argv[1], argv[2])
+
+
+if __name__ == '__main__':
+    import sys
+    main(sys.argv)
